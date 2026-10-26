@@ -4,8 +4,9 @@ import { useStore } from '../store'
 import { hasOriginal, ingest } from '../db'
 import { parsePeople, readText } from '../csv'
 import { Thumb } from '../Thumb'
+import { IconList, IconPhoto } from '../icons'
 
-function Drop(p: { title: string; hint: string; accept: string; multiple?: boolean; onFiles: (f: File[]) => void; children?: React.ReactNode }) {
+function Drop(p: { title: string; hint: string; icon: React.ReactNode; accept: string; multiple?: boolean; onFiles: (f: File[]) => void; children?: React.ReactNode }) {
   const [over, setOver] = useState(false)
   const ref = useRef<HTMLInputElement>(null)
   return (
@@ -17,6 +18,7 @@ function Drop(p: { title: string; hint: string; accept: string; multiple?: boole
       onDrop={(e) => { e.preventDefault(); setOver(false); p.onFiles([...e.dataTransfer.files]) }}>
       <input ref={ref} type="file" hidden accept={p.accept} multiple={p.multiple}
         onChange={(e) => { p.onFiles([...(e.target.files ?? [])]); e.target.value = '' }} />
+      <div className="drop-icon">{p.icon}</div>
       <div className="drop-title">{p.title}</div>
       <div className="drop-hint">{p.hint}</div>
       {p.children}
@@ -72,7 +74,7 @@ export function ImportPage() {
       <p className="lede">Die Fotos vom Anlass und die Teilnehmerliste hierher ziehen. Beides bleibt in diesem Browser; nichts wird hochgeladen.</p>
 
       <div className="grid2">
-        <Drop title="Fotos" hint="JPG, PNG oder WebP. Mehrere auf einmal." accept="image/*" multiple onFiles={onPhotos}>
+        <Drop title="Fotos" icon={<IconPhoto size={20} />} hint="JPG, PNG oder WebP. Mehrere auf einmal." accept="image/*" multiple onFiles={onPhotos}>
           {prog && (
             <div className="prog">
               <div className="bar"><i style={{ width: `${(prog.done / prog.total) * 100}%` }} /></div>
@@ -80,7 +82,7 @@ export function ImportPage() {
             </div>
           )}
         </Drop>
-        <Drop title="Teilnehmerliste" hint="CSV mit Vorname, Nachname, E-Mail. Komma oder Semikolon." accept=".csv,.txt,text/csv" onFiles={onList} />
+        <Drop title="Teilnehmerliste" icon={<IconList size={20} />} hint="CSV mit Vorname, Nachname, E-Mail. Komma oder Semikolon." accept=".csv,.txt,text/csv" onFiles={onList} />
       </div>
 
       <div className="grid2 below">

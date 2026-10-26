@@ -36,7 +36,7 @@ export function PostPage() {
           : <p className="muted">Kein Text in diesem Link.</p>}
         {text && <button className="btn primary postcard-copy" onClick={copy}>{done ? 'Kopiert ✓' : 'Text kopieren'}</button>}
       </div>
-      <p className="muted small">Fotodank · Der Text steht nur in diesem Link, nichts wird gespeichert.</p>
+      <p className="muted small">Sharing is Caring · Der Text steht nur in diesem Link, nichts wird gespeichert.</p>
     </div>
   )
 }

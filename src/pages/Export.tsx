@@ -31,7 +31,7 @@ export function ExportPage() {
     setErr(''); setDone(null)
     try {
       const { blob, count } = await buildZip(dataOf(useStore.getState()), (f, label) => setProg({ f, label }))
-      const name = `${slug(settings.event)}_Fotodank.zip`
+      const name = `${slug(settings.event)}_SharingIsCaring.zip`
       download(blob, name)
       setDone({ blob, name, count })
     } catch (e) { setErr((e as Error).message) }

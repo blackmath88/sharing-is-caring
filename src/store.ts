@@ -77,7 +77,7 @@ export const useStore = create<Data & Actions>()(
       load: (d) => set({ ...empty(), ...d }),
       reset: () => set(empty()),
     }),
-    { name: 'fotodank', version: 1 },
+    { name: 'fotodank', version: 1 }, // Speicher-Schlüssel bleibt, damit bestehende Daten erhalten bleiben
   ),
 )
 

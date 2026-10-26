@@ -1,7 +1,7 @@
 import type { Person, Settings, Tpl } from './store'
 
 export const DEFAULT_SETTINGS: Settings = {
-  event: 'Leadership Connect',
+  event: 'Unser Anlass',
   senderName: '',
   senderEmail: '',
   maxEdge: 2000,
@@ -19,17 +19,17 @@ Sie dürfen die Bilder gerne verwenden, zum Beispiel für einen LinkedIn-Beitrag
 {post}
 ---
 
-Wenn Sie uns im Beitrag markieren, teilen wir ihn gerne weiter. So erreicht das Thema Führung noch ein paar Menschen mehr.
+Wenn Sie uns im Beitrag markieren, teilen wir ihn gerne weiter. So erreicht der Anlass noch ein paar Menschen mehr.
 
 Herzliche Grüsse
 {absender}`,
-  post: `Beim {event} ging es um Führung, ums Zuhören und um die Frage, was gute Führung im Alltag ausmacht.
+  post: `Beim {event} ging es um Austausch, neue Perspektiven und gute Gespräche.
 
 Was ich mitnehme: [Ihr Gedanke in einem Satz]
 
 Danke an das Team für den Rahmen und an alle für die offenen Gespräche.
 
-#Führung #Leadership #LeadershipConnect`,
+#Netzwerk #Community`,
 }
 
 export const PLACEHOLDERS: [string, string][] = [

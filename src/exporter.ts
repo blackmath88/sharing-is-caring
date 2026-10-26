@@ -33,7 +33,7 @@ function buildMail(d: Data, { person: p, photoIds }: Recipient, imgs: Imgs) {
     name: `${ev}_${slug(p.first || p.last)}_${String(k + 1).padStart(2, '0')}.jpg`,
     data: imgs.get(id)!.full,
   }))
-  const inline = photoIds.map((id, k) => ({ cid: `foto${k + 1}@fotodank`, data: imgs.get(id)!.thumb }))
+  const inline = photoIds.map((id, k) => ({ cid: `foto${k + 1}@sharingiscaring`, data: imgs.get(id)!.thumb }))
   const v = varsFor(p, atts.length, d.settings, d.tpl.post)
   const card = postCard({
     name: v.name, first: p.first, last: p.last, post: v.post, copyHref: copyUrl(v.post),
