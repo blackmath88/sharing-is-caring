@@ -59,7 +59,7 @@ export function TagPage() {
     const k = e.key
     if (k === 'ArrowDown') { e.preventDefault(); setSel(Math.min(total - 1, s + 1)) }
     else if (k === 'ArrowUp') { e.preventDefault(); setSel(Math.max(0, s - 1)) }
-    else if (k === 'Enter') { e.preventDefault(); query ? total && pick(s) : go(1) }
+    else if (k === 'Enter') { e.preventDefault(); if (!query) go(1); else if (total) pick(s) }
     else if (k === 'Escape') setQ('')
     else if (!query && k === 'Backspace' && curTags.length) untag(cur.id, curTags[curTags.length - 1])
     else if (!query && (k === 'ArrowRight' || k === 'ArrowLeft')) { e.preventDefault(); go(k === 'ArrowRight' ? 1 : -1) }

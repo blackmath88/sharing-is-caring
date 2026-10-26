@@ -16,6 +16,13 @@
   <a href="LICENSE">MIT</a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/blackmath88/sharing-is-caring/actions/workflows/ci.yml"><img src="https://github.com/blackmath88/sharing-is-caring/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/blackmath88/sharing-is-caring/actions/workflows/deploy.yml"><img src="https://github.com/blackmath88/sharing-is-caring/actions/workflows/deploy.yml/badge.svg" alt="Deploy"></a>
+</p>
+
+No account, no install. Open the app and click **"Mit Beispiel ausprobieren"** to walk through all four steps with generated photos and invented people.
+
 ---
 
 ## The problem
@@ -83,7 +90,12 @@ The UI is in German. The code and this README are in English.
 npm ci
 npm run dev        # http://localhost:5173
 npm run build      # static output in dist/
+npm run check      # typecheck
+npm run lint       # oxlint
+npm test           # vitest: CSV parser, MIME builder, HTML builder
 ```
+
+CI runs all four on every push. Image resizing for the export runs in a Web Worker pool, so the UI stays responsive and the export can be cancelled.
 
 ### Deploy to GitHub Pages
 

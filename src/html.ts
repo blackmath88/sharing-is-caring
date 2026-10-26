@@ -19,12 +19,12 @@ export const b64url = (s: string) =>
 export const copyUrl = (post: string) =>
   `${location.origin}${location.pathname}#/post?t=${b64url(post)}`
 
-export type InlineImg = { cid: string }
+export type InlineImg = { src: string }
 
 export function postCard(o: { name: string; first: string; last: string; post: string; images: InlineImg[]; copyHref: string }) {
   const n = o.images.length
   const cell = (im: InlineImg, w: string) =>
-    `<td width="${w}" valign="top" style="padding:2px;"><img src="cid:${im.cid}" width="100%" alt="" style="display:block;width:100%;height:auto;border:0;"></td>`
+    `<td width="${w}" valign="top" style="padding:2px;"><img src="${esc(im.src)}" width="100%" alt="" style="display:block;width:100%;height:auto;border:0;"></td>`
   let media = ''
   if (n === 1) media = `<tr>${cell(o.images[0], '100%')}</tr>`
   else if (n > 1) {

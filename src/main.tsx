@@ -9,6 +9,7 @@ import { TagPage } from './pages/Tag'
 import { TemplatesPage } from './pages/Templates'
 import { ExportPage } from './pages/Export'
 import { PostPage } from './pages/Post'
+import '@fontsource-variable/inter'
 import './styles.css'
 
 const root = createRootRoute({ component: Outlet })

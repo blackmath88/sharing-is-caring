@@ -1,5 +1,5 @@
 import { strToU8, zip, type Zippable } from 'fflate'
-import { exportImage } from './db'
+import { POOL, exportImages } from './db'
 import { buildEml } from './eml'
 import { buildHtml, copyUrl, postCard } from './html'
 import { getRecipients, type Data, type Recipient } from './store'
@@ -17,12 +17,27 @@ export const estimateMB = (n: number, maxEdge: number) => n * 0.75 * (maxEdge / 
 const THUMB = 560 // Vorschau in der HTML-Mail (lange Kante)
 type Imgs = Map<string, { full: Uint8Array; thumb: Uint8Array }>
 
-async function loadImages(ids: string[], maxEdge: number, onProgress?: (f: number, label: string) => void) {
+const eta = (s: number) => (s >= 90 ? `${Math.round(s / 60)} min` : `${s} s`)
+
+// Verkleinert parallel in Workern; Abbruch über AbortSignal, Restzeit aus dem bisherigen Tempo.
+async function loadImages(ids: string[], maxEdge: number, onProgress?: (f: number, label: string) => void, signal?: AbortSignal) {
   const imgs: Imgs = new Map()
-  for (let i = 0; i < ids.length; i++) {
-    onProgress?.((i / ids.length) * 0.85, `Bilder verkleinern: ${i + 1} von ${ids.length}`)
-    imgs.set(ids[i], { full: await exportImage(ids[i], maxEdge), thumb: await exportImage(ids[i], THUMB, 0.72) })
+  let next = 0, done = 0
+  const t0 = performance.now()
+  onProgress?.(0, `Bilder verkleinern: 0 von ${ids.length}`)
+  const run = async (slot: number) => {
+    while (next < ids.length) {
+      if (signal?.aborted) throw new DOMException('Abgebrochen', 'AbortError')
+      const id = ids[next++]
+      const [full, thumb] = await exportImages(id, [{ maxEdge, q: 0.86 }, { maxEdge: THUMB, q: 0.72 }], slot)
+      imgs.set(id, { full, thumb })
+      done++
+      const left = Math.round(((performance.now() - t0) / done) * (ids.length - done) / 1000)
+      onProgress?.((done / ids.length) * 0.85, `Bilder verkleinern: ${done} von ${ids.length}${done >= 2 && left >= 2 ? ` · noch ${eta(left)}` : ''}`)
+    }
   }
+  await Promise.all(Array.from({ length: Math.min(POOL, ids.length) }, (_, i) => run(i)))
+  if (signal?.aborted) throw new DOMException('Abgebrochen', 'AbortError')
   return imgs
 }
 
@@ -37,15 +52,14 @@ function buildMail(d: Data, { person: p, photoIds }: Recipient, imgs: Imgs) {
   const v = varsFor(p, atts.length, d.settings, d.tpl.post)
   const card = postCard({
     name: v.name, first: p.first, last: p.last, post: v.post, copyHref: copyUrl(v.post),
-    images: inline.map((i) => ({ cid: i.cid })),
+    images: inline.map((i) => ({ src: `cid:${i.cid}` })),
   })
-  const { post: _omit, ...textVars } = v
   const eml = buildEml({
     from: d.settings.senderEmail ? { name: d.settings.senderName, email: d.settings.senderEmail } : undefined,
     to: { name: v.name, email: p.email },
     subject: fill(d.tpl.subject, v),
     body: fill(d.tpl.body, v),
-    html: buildHtml(fill(d.tpl.body, textVars), card),
+    html: buildHtml(fill(d.tpl.body, { ...v, post: '{post}' }), card),
     inline,
     attachments: atts,
   })
@@ -60,10 +74,10 @@ export async function buildOne(d: Data, personId: string) {
   return { blob: new Blob([m.eml], { type: 'message/rfc822' }), name: `Mail_${slug(m.name)}.eml` }
 }
 
-export async function buildZip(d: Data, onProgress: (f: number, label: string) => void) {
+export async function buildZip(d: Data, onProgress: (f: number, label: string) => void, signal?: AbortSignal) {
   const recips = getRecipients(d).filter((r) => !d.excluded.includes(r.person.id))
   const ids = [...new Set(recips.flatMap((r) => r.photoIds))]
-  const imgs = await loadImages(ids, d.settings.maxEdge, onProgress)
+  const imgs = await loadImages(ids, d.settings.maxEdge, onProgress, signal)
 
   const files: Zippable = {}
   const used = new Set<string>()

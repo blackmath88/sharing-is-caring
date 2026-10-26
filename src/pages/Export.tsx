@@ -18,6 +18,7 @@ export function ExportPage() {
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState<string | null>(null)
   const backup = useRef<HTMLInputElement>(null)
+  const abort = useRef<AbortController | null>(null)
 
   // Einzelne Mail als .eml: Doppelklick öffnet sie im Mailprogramm als Entwurf
   async function one(id: string) {
@@ -29,12 +30,14 @@ export function ExportPage() {
 
   async function run() {
     setErr(''); setDone(null)
+    abort.current = new AbortController()
     try {
-      const { blob, count } = await buildZip(dataOf(useStore.getState()), (f, label) => setProg({ f, label }))
+      const { blob, count } = await buildZip(dataOf(useStore.getState()), (f, label) => setProg({ f, label }), abort.current.signal)
       const name = `${slug(settings.event)}_SharingIsCaring.zip`
       download(blob, name)
       setDone({ blob, name, count })
-    } catch (e) { setErr((e as Error).message) }
+    } catch (e) { if ((e as Error).name !== 'AbortError') setErr((e as Error).message) }
+    abort.current = null
     setProg(null)
   }
 
@@ -88,7 +91,7 @@ export function ExportPage() {
         {prog && (
           <div className="prog grow">
             <div className="bar"><i style={{ width: `${prog.f * 100}%` }} /></div>
-            <span>{prog.label}</span>
+            <span>{prog.label} <button className="link-btn" onClick={() => abort.current?.abort()}>Abbrechen</button></span>
           </div>
         )}
         {done && !prog && (

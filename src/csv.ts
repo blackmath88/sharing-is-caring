@@ -8,7 +8,7 @@ export async function readText(file: File) {
   catch { return new TextDecoder('windows-1252').decode(buf) }
 }
 
-const key = (h: string) => h.toLowerCase().replace(/[\s_.\-]/g, '')
+const key = (h: string) => h.toLowerCase().replace(/[\s_.-]/g, '')
 
 export function parsePeople(text: string): Omit<Person, 'id'>[] {
   const res = Papa.parse<Record<string, string>>(text.trim(), { header: true, skipEmptyLines: true })

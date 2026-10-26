@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { useStore } from '../store'
+import { DEFAULT_SETTINGS } from '../templates'
 import { hasOriginal, ingest } from '../db'
 import { parsePeople, readText } from '../csv'
 import { Thumb } from '../Thumb'
@@ -27,7 +28,8 @@ function Drop(p: { title: string; hint: string; icon: React.ReactNode; accept: s
 }
 
 export function ImportPage() {
-  const { photos, people, addPhoto, mergePeople, clearPeople } = useStore()
+  const { photos, people, settings, addPhoto, mergePeople, clearPeople, setSettings } = useStore()
+  const [demo, setDemo] = useState(false)
   const [prog, setProg] = useState<{ done: number; total: number } | null>(null)
   const [photoMsg, setPhotoMsg] = useState('')
   const [listMsg, setListMsg] = useState<{ text: string; error?: boolean } | null>(null)
@@ -67,6 +69,19 @@ export function ImportPage() {
   }
 
   const noMail = people.filter((p) => !p.email).length
+
+  // Beispieldaten aus public/demo: erfundene Personen, generierte Bilder
+  async function loadDemo() {
+    setDemo(true)
+    try {
+      const file = async (path: string, type: string) => new File([await (await fetch(path)).blob()], path.split('/').pop()!, { type })
+      const imgs = await Promise.all([1, 2, 3, 4, 5, 6, 7, 8].map((i) => file(`demo/photo_0${i}.jpg`, 'image/jpeg')))
+      await onPhotos(imgs)
+      await onList([await file('demo/teilnehmende.csv', 'text/csv')])
+      if (settings.event === DEFAULT_SETTINGS.event) setSettings({ event: 'Sommerfest 2026' })
+    } catch { setListMsg({ text: 'Beispiel konnte nicht geladen werden.', error: true }) }
+    setDemo(false)
+  }
 
   return (
     <div className="page">
@@ -117,8 +132,13 @@ export function ImportPage() {
         </section>
       </div>
 
-      {photos.length > 0 && (
+      {photos.length > 0 ? (
         <div className="next"><Link to="/taggen" className="btn primary">Weiter zum Markieren</Link></div>
+      ) : !people.length && (
+        <div className="next demo">
+          <button className="btn" disabled={demo} onClick={loadDemo}>{demo ? 'Lädt …' : 'Mit Beispiel ausprobieren'}</button>
+          <span className="muted small">8 generierte Fotos und 8 erfundene Personen, zum Durchklicken.</span>
+        </div>
       )}
     </div>
   )

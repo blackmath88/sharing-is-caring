@@ -1,7 +1,9 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getRecipients, useStore, type Tpl } from '../store'
 import { DEFAULT_TPL, PLACEHOLDERS, fill, varsFor } from '../templates'
 import { Thumb } from '../Thumb'
+import { useImages } from '../db'
+import { buildHtml, copyUrl, postCard } from '../html'
 
 type El = HTMLInputElement | HTMLTextAreaElement
 
@@ -13,6 +15,15 @@ export function TemplatesPage() {
   const r = recips.find((x) => x.person.id === pid) ?? recips[0]
   const person = r?.person ?? { first: 'Anna', last: 'Muster', email: 'anna.muster@example.ch' }
   const v = varsFor(person, r?.photoIds.length ?? 3, settings, tpl.post)
+  const [mode, setMode] = useState<'html' | 'text'>('html')
+  const thumbs = useImages('t', r?.photoIds ?? [])
+  const html = buildHtml(fill(tpl.body, { ...v, post: '{post}' }), postCard({
+    name: v.name, first: person.first, last: person.last, post: v.post, copyHref: copyUrl(v.post),
+    images: thumbs.map((src) => ({ src })),
+  }))
+  const frame = useRef<HTMLIFrameElement>(null)
+  const fit = () => { const f = frame.current; if (f?.contentDocument?.body) f.style.height = f.contentDocument.body.scrollHeight + 24 + 'px' }
+  useEffect(() => { const id = setTimeout(fit, 60); return () => clearTimeout(id) }, [html])
 
   function insert(ph: string) {
     const f = focus.current
@@ -68,15 +79,23 @@ export function TemplatesPage() {
               {recips.map((x) => <option key={x.person.id} value={x.person.id}>{x.person.first} {x.person.last}</option>)}
             </select>
           )}
-          {!recips.length && <p className="muted small">Vorschau mit Beispielperson. Sobald jemand markiert ist, erscheint hier die echte Mail.</p>}
+          <div className="preview-bar">
+            <span className="muted small">{recips.length ? 'So kommt die Mail an.' : 'Vorschau mit Beispielperson. Sobald jemand markiert ist, erscheint hier die echte Mail.'}</span>
+            <div className="seg" role="group" aria-label="Ansicht">
+              <button className={mode === 'html' ? 'on' : ''} onClick={() => setMode('html')}>HTML</button>
+              <button className={mode === 'text' ? 'on' : ''} onClick={() => setMode('text')}>Text</button>
+            </div>
+          </div>
           <article className="mail">
             <header>
               <div><span>Von</span>{settings.senderName || '–'}{settings.senderEmail && <em> {settings.senderEmail}</em>}</div>
               <div><span>An</span>{v.name}{person.email && <em> {person.email}</em>}</div>
               <div className="subj">{fill(tpl.subject, v)}</div>
             </header>
-            <div className="mail-body">{fill(tpl.body, v)}</div>
-            {r && (
+            {mode === 'html'
+              ? <iframe ref={frame} className="mail-frame" title="Mail-Vorschau" srcDoc={html} onLoad={fit} />
+              : <div className="mail-body">{fill(tpl.body, v)}</div>}
+            {r && mode === 'text' && (
               <footer>
                 {r.photoIds.slice(0, 6).map((id) => <Thumb key={id} id={id} />)}
                 {r.photoIds.length > 6 && <span className="more">+{r.photoIds.length - 6}</span>}
