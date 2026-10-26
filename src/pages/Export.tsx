@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { dataOf, getRecipients, useStore } from '../store'
-import { buildZip, download, estimateMB, slug } from '../exporter'
+import { buildOne, buildZip, download, estimateMB, slug } from '../exporter'
 import { Thumb } from '../Thumb'
 
 const validMail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)
@@ -16,7 +16,16 @@ export function ExportPage() {
   const [prog, setProg] = useState<{ f: number; label: string } | null>(null)
   const [done, setDone] = useState<{ blob: Blob; name: string; count: number } | null>(null)
   const [err, setErr] = useState('')
+  const [busy, setBusy] = useState<string | null>(null)
   const backup = useRef<HTMLInputElement>(null)
+
+  // Einzelne Mail als .eml: Doppelklick öffnet sie im Mailprogramm als Entwurf
+  async function one(id: string) {
+    setErr(''); setBusy(id)
+    try { const { blob, name } = await buildOne(dataOf(useStore.getState()), id); download(blob, name) }
+    catch (e) { setErr((e as Error).message) }
+    setBusy(null)
+  }
 
   async function run() {
     setErr(''); setDone(null)
@@ -48,7 +57,7 @@ export function ExportPage() {
       {recips.length > 0 && (
         <div className="panel">
           <table className="recips">
-            <thead><tr><th aria-label="Senden" /><th>Person</th><th>E-Mail</th><th>Fotos</th><th>Grösse</th></tr></thead>
+            <thead><tr><th aria-label="Senden" /><th>Person</th><th>E-Mail</th><th>Fotos</th><th>Grösse</th><th aria-label="Einzelne Mail" /></tr></thead>
             <tbody>
               {recips.map(({ person: p, photoIds }) => {
                 const off = excluded.includes(p.id)
@@ -60,6 +69,7 @@ export function ExportPage() {
                     <td><input className={`field slim${!off && !validMail(p.email) ? ' invalid' : ''}`} value={p.email} placeholder="E-Mail ergänzen" onChange={(e) => updatePerson(p.id, { email: e.target.value.trim() })} /></td>
                     <td><div className="tiny-thumbs">{photoIds.slice(0, 4).map((id) => <Thumb key={id} id={id} />)}{photoIds.length > 4 && <span className="muted small">+{photoIds.length - 4}</span>}</div></td>
                     <td className={mb > 20 ? 'warn' : 'muted'}>ca. {mb.toFixed(1)} MB</td>
+                    <td><button className="btn slim" disabled={!!busy || !!prog} onClick={() => one(p.id)} title="Nur diese Mail als .eml herunterladen">{busy === p.id ? '…' : 'Mail öffnen'}</button></td>
                   </tr>
                 )
               })}
@@ -89,6 +99,7 @@ export function ExportPage() {
 
       <p className="muted small explain">
         Pro Person ein Ordner mit Mail-Entwurf (.eml), LinkedIn-Text und den Fotos. Doppelklick auf die .eml öffnet in Outlook einen sendebereiten Entwurf mit Anhängen.
+        „Mail öffnen“ lädt nur diese eine .eml; wenn der Browser .eml-Dateien direkt öffnet, landet sie mit einem Klick im Mailprogramm.
       </p>
 
       <section className="backup">

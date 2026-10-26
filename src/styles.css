@@ -68,6 +68,7 @@ nav { display: flex; flex-direction: column; gap: 2px; }
 .btn { appearance: none; display: inline-flex; align-items: center; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-weight: 550; padding: 7px 14px; border-radius: var(--r-sm); cursor: pointer; text-decoration: none; box-shadow: 0 1px 1px rgba(0, 0, 0, .03); transition: background .12s, transform .06s; }
 .btn:hover { background: var(--surface-2); }
 .btn:active { transform: scale(.98); }
+.btn.slim { padding: 4px 10px; font-size: 12.5px; white-space: nowrap; }
 .btn.primary { background: var(--mint-ink); border-color: transparent; color: var(--on-primary); }
 .btn.primary:hover { background: color-mix(in srgb, var(--mint-ink) 88%, var(--ink)); }
 .btn:disabled { opacity: .4; cursor: default; transform: none; }
@@ -190,3 +191,12 @@ kbd { font-family: var(--font); font-size: 11px; min-width: 20px; display: inlin
   .tpl-preview { position: static; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* Kopierseite für den LinkedIn-Text (Ziel des Links in der Mail) */
+.postpage { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px 16px; background: #f3f2ef; }
+.postcard { width: 100%; max-width: 540px; background: #fff; border: 1px solid #d9d9d9; border-radius: 9px; padding: 14px; }
+.postcard-head { display: flex; gap: 9px; align-items: center; margin-bottom: 10px; }
+.postcard-avatar { width: 48px; height: 48px; border-radius: 50%; background: #0a66c2; color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 20px; }
+.postcard-name { font-weight: 700; font-size: 15px; }
+.postcard-text { white-space: pre-wrap; font-size: 14.5px; line-height: 1.45; padding: 10px 0 14px; }
+.postcard-copy { width: 100%; }

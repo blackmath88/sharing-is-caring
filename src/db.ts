@@ -30,12 +30,12 @@ export async function ingest(file: File, id: string) {
 
 export const hasOriginal = async (id: string) => !!(await get('o:' + id, store))
 
-export async function exportImage(id: string, maxEdge: number): Promise<Uint8Array> {
+export async function exportImage(id: string, maxEdge: number, q = 0.86): Promise<Uint8Array> {
   const f = await get<Blob>('o:' + id, store)
   if (!f) throw new Error('Foto fehlt im Browser-Speicher. Bitte erneut importieren.')
   const bmp = await createImageBitmap(f)
   try {
-    return new Uint8Array(await (await resize(bmp, maxEdge, 0.86)).arrayBuffer())
+    return new Uint8Array(await (await resize(bmp, maxEdge, q)).arrayBuffer())
   } finally {
     bmp.close()
   }
