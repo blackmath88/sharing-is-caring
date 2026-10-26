@@ -23,6 +23,7 @@ type Actions = {
   clearPeople: () => void
   tag: (photoId: string, personId: string) => void
   untag: (photoId: string, personId: string) => void
+  setTags: (photoId: string, personIds: string[]) => void
   toggleExcluded: (personId: string) => void
   setSettings: (p: Partial<Settings>) => void
   setTpl: (p: Partial<Tpl>) => void
@@ -67,6 +68,7 @@ export const useStore = create<Data & Actions>()(
         return cur.includes(pe) ? s : { tags: { ...s.tags, [ph]: [...cur, pe] } }
       }),
       untag: (ph, pe) => set((s) => ({ tags: { ...s.tags, [ph]: (s.tags[ph] ?? []).filter((x) => x !== pe) } })),
+      setTags: (ph, ids) => set((s) => ({ tags: { ...s.tags, [ph]: [...new Set(ids)] } })),
       toggleExcluded: (id) => set((s) => ({
         excluded: s.excluded.includes(id) ? s.excluded.filter((x) => x !== id) : [...s.excluded, id],
       })),

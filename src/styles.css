@@ -125,6 +125,7 @@ kbd { font-family: var(--font); font-size: 11px; min-width: 20px; display: inlin
 .chip button:hover { opacity: 1; background: color-mix(in srgb, var(--mint-ink) 14%, transparent); }
 @keyframes pop { from { transform: scale(.85); opacity: 0; } }
 .picker { display: flex; flex-direction: column; gap: 6px; }
+.all-row { display: flex; gap: 14px; margin-top: -2px; }
 .opts { list-style: none; margin: 0; padding: 4px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow); }
 .opts-head { font-size: 11.5px; color: var(--muted); padding: 4px 8px 2px; }
 .opts button { width: 100%; display: flex; justify-content: space-between; gap: 10px; border: 0; background: none; font: inherit; font-size: 13.5px; color: var(--ink); text-align: left; padding: 6px 8px; border-radius: 6px; cursor: pointer; }

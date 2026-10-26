@@ -7,7 +7,7 @@ import { Thumb } from '../Thumb'
 const fold = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 
 export function TagPage() {
-  const { photos, people, tags, tag, untag, addPerson } = useStore()
+  const { photos, people, tags, tag, untag, setTags, addPerson } = useStore()
   const [only, setOnly] = useState<string[] | null>(null) // Snapshot "ohne Person"
   const list = only ? photos.filter((p) => only.includes(p.id)) : photos
   const [idx, setIdx] = useState(0)
@@ -137,6 +137,23 @@ export function TagPage() {
             </ul>
           )}
         </div>
+
+        {cur && people.length > 0 && (
+          <div className="all-row">
+            {curTags.length < people.length && (
+              <button className="link-btn" onMouseDown={(e) => e.preventDefault()}
+                onClick={() => { setTags(cur.id, people.map((p) => p.id)); setQ('') }}>
+                Alle {people.length} markieren
+              </button>
+            )}
+            {curTags.length > 0 && (
+              <button className="link-btn" onMouseDown={(e) => e.preventDefault()}
+                onClick={() => { setTags(cur.id, []); setQ('') }}>
+                Alle entfernen
+              </button>
+            )}
+          </div>
+        )}
 
         <dl className="keys">
           <dt><kbd>↵</kbd></dt><dd>hinzufügen, im leeren Feld: nächstes Foto</dd>
