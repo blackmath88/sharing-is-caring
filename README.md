@@ -1,141 +1,118 @@
-<p align="center">
-  <img src="public/logo.svg" width="96" alt="Sharing is Caring logo">
-</p>
+<!-- BEGIN public-repo-header -->
+<div align="center">
 
-<h1 align="center">Sharing is Caring</h1>
+# Sharing is Caring
 
-<p align="center">
-  Send event photos to the people in them. Each person gets one mail with their pictures,<br>
-  a ready-made LinkedIn post, and a one-click way to use it. Everything runs in the browser.
-</p>
+**Event photos → the people in them → one mail each, with a LinkedIn post ready to use.**
 
-<p align="center">
-  <a href="https://blackmath88.github.io/sharing-is-caring/"><b>Open the app</b></a> ·
-  <a href="#how-it-works">How it works</a> ·
-  <a href="#run-it-yourself">Run it yourself</a> ·
-  <a href="LICENSE">MIT</a>
-</p>
+<a href="https://github.com/blackmath88/sharing-is-caring/actions/workflows/ci.yml"><img alt="Checks" src="https://github.com/blackmath88/sharing-is-caring/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+<a href="https://github.com/blackmath88/sharing-is-caring/actions/workflows/deploy.yml"><img alt="Deploy" src="https://github.com/blackmath88/sharing-is-caring/actions/workflows/deploy.yml/badge.svg?branch=main"></a>
+<a href="https://github.com/blackmath88/sharing-is-caring"><img alt="Primary language: TypeScript" src="https://img.shields.io/badge/language-TypeScript-526078?style=flat"></a>
+<a href="https://github.com/blackmath88/sharing-is-caring/tree/main/docs"><img alt="Documentation" src="https://img.shields.io/badge/docs-guide-16796f?style=flat"></a>
+<a href="https://github.com/blackmath88/sharing-is-caring/blob/main/LICENSE"><img alt="Licence: MIT" src="https://img.shields.io/badge/licence-MIT-737373?style=flat"></a>
+<a href="https://github.com/blackmath88/sharing-is-caring/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/blackmath88/sharing-is-caring?style=flat&amp;color=737373"></a>
 
-<p align="center">
-  <a href="https://github.com/blackmath88/sharing-is-caring/actions/workflows/ci.yml"><img src="https://github.com/blackmath88/sharing-is-caring/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/blackmath88/sharing-is-caring/actions/workflows/deploy.yml"><img src="https://github.com/blackmath88/sharing-is-caring/actions/workflows/deploy.yml/badge.svg" alt="Deploy"></a>
-</p>
+</div>
+<!-- END public-repo-header -->
 
-No account, no install. Open the app and click **"Mit Beispiel ausprobieren"** to walk through all four steps with generated photos and invented people.
+A small browser application for the step after an event: the photographer delivers a folder, and the people in the pictures should get theirs. Import the photos and the participant list, tag who is on which picture, write one template, and export one mail per person with their photos attached and a LinkedIn post suggestion they can copy with one click. Nothing is uploaded anywhere.
 
----
+**[Open the app](https://blackmath88.github.io/sharing-is-caring/) · [Start](#start) · [What you can do](#what-you-can-do) · [Sending](#sending) · [Architecture](docs/ARCHITECTURE.md)**
 
-## The problem
+![Four steps: import photos and list, tag who is on which picture, write one template, send one mail per person. Static page, no backend, photos never leave the browser.](.github/media/flow.svg)
 
-You host an event, a photographer takes a few hundred pictures, and then they sit in a folder.
-The people who would love to post "I was there" never get their photos, or get a link to a gallery
-of everyone and give up. Sending each person their own pictures by hand takes an afternoon.
+*Flow, not an application screenshot. Screenshots with generated example data are further down.*
 
-## What this does
+> **Sending stays manual by design.** The app prepares drafts; your own mail client sends them, one person at a time, after you have read each one. There is no mass mailing, no face recognition and no server.
 
-1. **Import** the photos and the participant list (CSV with first name, last name, email).
-2. **Tag** who is on which picture. Type a name, press Enter, next photo. Group shot? One click tags everyone.
-3. **Write one template** for the mail and the LinkedIn post. Placeholders fill in per person.
-4. **Export** a ZIP with one folder per person, or one mail at a time. Each folder has an Outlook-ready
-   draft (`.eml`) with the photos attached, the post as a text file, and the resized images.
+## Start
 
-Sending stays manual on purpose: one person at a time, you read, you send. No mass mailing, no automation you can't see.
+Open **[the app](https://blackmath88.github.io/sharing-is-caring/)** and click **Mit Beispiel ausprobieren** on the first page. Eight generated photos and eight invented people load, and the four steps can be walked through in a minute. Real data stays in your browser's IndexedDB and localStorage; clear the site data and it is gone.
 
-### Sending
+To run it locally, use **Node.js 22** and npm:
 
-There is no universal way to open a draft with attachments in every mail client without an OAuth integration,
-so the Export page offers three honest paths:
+```bash
+git clone https://github.com/blackmath88/sharing-is-caring.git
+cd sharing-is-caring
+npm ci
+npm run dev
+```
+
+Open the local URL Vite prints (normally http://localhost:5173). The interface is in German.
+
+## What you can do
+
+| Task | Result |
+|---|---|
+| Import photos and a CSV list | Photos as thumbnails, people with name and address; the list parser accepts German or English headers, comma or semicolon |
+| Tag a photo | Type a name, press Enter, next photo; a group shot is one click for everyone |
+| Write one template | Mail text and LinkedIn post with placeholders, previewed per person as the real HTML mail |
+| Send to one person | Share sheet with the photos, a mailto draft, or the full .eml with the post card |
+| Export everything | A ZIP with one folder per person: .eml draft, LinkedIn text, resized photos, plus an overview CSV |
+| Back up | People, tags and templates as one JSON file |
+
+The recipient's mail is HTML: text, a LinkedIn-style card with their own photos as the post's media, and a **Text kopieren** button that opens a small page with a real copy-to-clipboard button. Plain-text clients get the same content as text.
+
+## Sending
+
+No mail client opens a draft with attachments from a file in every case, so the Export page offers three honest paths. Details and the client matrix are in [Sending](docs/SENDING.md).
 
 | Path | What you get | Where |
 |---|---|---|
-| **Senden** | The system share sheet with the photos and the text, pick your mail app | Phones, Windows, Safari on Mac |
-| **Senden** (fallback) | A `mailto:` draft with recipient, subject and text; photos are in that person's ZIP folder | Everywhere else |
-| **.eml** | The full mail: HTML post card, inline previews, photos attached | Classic Outlook on Windows opens it as a draft. New Outlook, Outlook for Mac and Apple Mail show it as a received message: open it, **Forward**, pick the recipient |
-
-The mail itself is HTML. The LinkedIn suggestion is rendered as a post card with the person's own photos
-as the media, and a **"Text kopieren"** button that opens a small page with a real copy-to-clipboard button.
-Plain-text clients, the share sheet and the mailto draft get a text version with the same copy link.
-
-## Privacy
-
-Nothing leaves the browser. Photos live in IndexedDB, names and templates in localStorage, and the
-app is a static page on GitHub Pages with no backend. The copy-text page carries the post in the URL
-fragment, which browsers never send to a server. Delete your browser data and it's gone.
+| **Senden** | The system share sheet with the photos and the text; pick your mail app | Phones, Windows, Safari on Mac |
+| **Senden**, fallback | A `mailto:` draft with recipient, subject and text; photos are in the person's ZIP folder | Everywhere else |
+| **.eml** | The full mail with post card, previews and photos attached | Classic Outlook for Windows opens it as a draft; other clients show it as received: open, **Forward**, pick the recipient |
 
 ## Screenshots
 
+Generated placeholder photos and invented names.
+
 | Import | Tag |
 |---|---|
-| ![Import page](docs/screens/1-import.png) | ![Tagging page](docs/screens/2-tag.png) |
+| ![Import page](.github/media/screens/1-import.png) | ![Tagging page](.github/media/screens/2-tag.png) |
 
-| Templates with live preview | Export, per person or as ZIP |
+| Template with live HTML preview | Export, per person or as ZIP |
 |---|---|
-| ![Templates page](docs/screens/3-texts.png) | ![Export page](docs/screens/4-export.png) |
+| ![Templates page](.github/media/screens/3-texts.png) | ![Export page](.github/media/screens/4-export.png) |
 
 <p align="center">
-  <img src="docs/screens/6-mail.png" width="560" alt="The mail a recipient gets: text, a LinkedIn-style post card with their photos, and a copy button"><br>
-  <sub>What the recipient gets. Photos here are generated placeholders.</sub>
+  <img src=".github/media/screens/6-mail.png" width="520" alt="The mail a recipient gets: text, a LinkedIn-style post card with their photos, and a copy button"><br>
+  <em>What the recipient gets.</em>
 </p>
 
 <p align="center">
-  <img src="docs/screens/5-dark.png" width="720" alt="Dark mode"><br>
-  <sub>Follows the system color scheme.</sub>
+  <img src=".github/media/screens/5-dark.png" width="640" alt="Tagging page in dark mode"><br>
+  <em>Follows the system colour scheme.</em>
 </p>
 
-## How it works
+## Privacy
 
-- **No server.** Vite + React + TanStack Router with hash history, so it works from any path, including a GitHub Pages subfolder.
-- **Images** are decoded once on import and stored as original, a 1600px view and a 320px thumbnail. Export resizes from the original to the size you pick (1600 / 2000 / 2560px).
-- **The `.eml` trick.** Each draft is a standard RFC 822 message with the header `X-Unsent: 1`. Outlook on Windows treats that as "open as a draft, not as received mail". The structure is `multipart/mixed` → `multipart/related` → `multipart/alternative`, so the mail carries plain text, HTML, inline thumbnails via `cid:` and the full-size JPEGs as attachments.
-- **The post card** is table-based HTML with inline styles, because Outlook renders mail with the Word engine. Expect square avatar corners there.
-- **The copy page** (`#/post?t=…`) decodes the post from the URL and offers one button. Mail clients strip scripts, so this is the only way a "copy" button in a mail can work.
-- **Participant list.** Any CSV with columns like `Vorname`, `Nachname`, `E-Mail` (or `Name` as full name). Comma or semicolon, UTF-8 or Windows-1252. Column matching is fuzzy, English headers work too. Excel files: save as CSV first.
-- **Backup.** People, tags and templates export as one JSON file. Photos are not included, re-import them with the same file names.
+Nothing leaves the browser. Photos live in IndexedDB, names and templates in localStorage, and the app is a static page on GitHub Pages with no backend, no analytics and no third-party font host. The copy-text page carries the post in the URL fragment, which browsers never send to a server.
 
-The UI is in German. The code and this README are in English.
+## Limits
 
-## Run it yourself
+- Tagging is manual. There is no face recognition, which keeps the tool simple and the photos offline.
+- Mails above roughly 20 MB bounce at some servers; the Export page flags those rows. A smaller export size is one setting away.
+- HEIC photos are not decoded by most browsers. Convert to JPEG first.
+- Outlook renders mail with the Word engine: expect square avatar corners in the post card there.
+
+## Verify a change
 
 ```bash
-npm ci
-npm run dev        # http://localhost:5173
-npm run build      # static output in dist/
 npm run check      # typecheck
 npm run lint       # oxlint
-npm test           # vitest: CSV parser, MIME builder, HTML builder
+npm test           # vitest: CSV parser, MIME builder, HTML builder, send module
+npm run build      # static output in dist/
 ```
 
-CI runs all four on every push. Image resizing for the export runs in a Web Worker pool, so the UI stays responsive and the export can be cancelled.
+CI runs all four on every push. The deploy workflow builds on push to `main` and publishes to GitHub Pages; the app uses relative paths and hash routing, so it works under any repository name. See [Contributing](CONTRIBUTING.md) for the verification routine and the house rules.
 
-### Deploy to GitHub Pages
+## Find your next step
 
-Fork or push the repo, then in **Settings → Pages** set **Source** to **GitHub Actions**.
-The workflow in `.github/workflows/deploy.yml` builds and deploys on every push to `main`.
-Because the app uses relative paths and hash routing, it works under any repository name without configuration.
+| Need | Read |
+|---|---|
+| How the pieces fit | [Architecture](docs/ARCHITECTURE.md) |
+| What each mail client supports | [Sending](docs/SENDING.md) |
+| Report a problem or propose a change | [Contributing](CONTRIBUTING.md) |
 
-## Limitations
-
-- Outlook for Windows opens `.eml` as an unsent draft. Apple Mail and others show it as a received message; you can still forward it or copy the content.
-- No face recognition. Tagging is manual by design, it keeps the tool simple and your photos offline. Group photos are one click.
-- Mails above roughly 20 MB bounce at some mail servers. Pick a smaller export size for people with many photos.
-- HEIC photos are not decoded by most browsers. Convert to JPEG first.
-
-## Repository layout
-
-```
-src/
-  main.tsx          routes: the four steps inside the app shell, plus the standalone copy page
-  store.ts          zustand store, persisted to localStorage
-  db.ts             IndexedDB blobs and image resizing
-  csv.ts            participant list parsing
-  templates.ts      default texts and placeholder filling
-  html.ts           HTML mail body and the LinkedIn-style post card
-  eml.ts            MIME assembly for the .eml drafts
-  exporter.ts       builds one mail or the whole ZIP
-  icons.tsx         icon set and logo
-  pages/            Import, Tag, Templates, Export, Post
-```
-
-## License
-
-[MIT](LICENSE)
+**Reuse:** [MIT](LICENSE). Demo photos are generated, demo people are invented; nothing in the repository depicts a real person.
