@@ -2,7 +2,7 @@ import { strToU8, zip, type Zippable } from 'fflate'
 import { POOL, exportImages } from './db'
 import { buildEml } from './eml'
 import { buildHtml, copyUrl, postCard } from './html'
-import { getRecipients, type Data, type Recipient } from './store'
+import { getRecipients, type Data, type Person, type Recipient } from './store'
 import { fill, varsFor } from './templates'
 
 export const slug = (s: string) =>
@@ -42,12 +42,11 @@ async function loadImages(ids: string[], maxEdge: number, onProgress?: (f: numbe
 }
 
 // Eine Mail: .eml (Text + HTML-Karte + Vorschaubilder + Anhänge), LinkedIn-Text, Anhänge
+export const attachmentName = (d: Data, p: Person, k: number) =>
+  `${slug(d.settings.event)}_${slug(p.first || p.last)}_${String(k + 1).padStart(2, '0')}.jpg`
+
 function buildMail(d: Data, { person: p, photoIds }: Recipient, imgs: Imgs) {
-  const ev = slug(d.settings.event)
-  const atts = photoIds.map((id, k) => ({
-    name: `${ev}_${slug(p.first || p.last)}_${String(k + 1).padStart(2, '0')}.jpg`,
-    data: imgs.get(id)!.full,
-  }))
+  const atts = photoIds.map((id, k) => ({ name: attachmentName(d, p, k), data: imgs.get(id)!.full }))
   const inline = photoIds.map((id, k) => ({ cid: `foto${k + 1}@sharingiscaring`, data: imgs.get(id)!.thumb }))
   const v = varsFor(p, atts.length, d.settings, d.tpl.post)
   const card = postCard({

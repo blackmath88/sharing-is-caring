@@ -39,12 +39,22 @@ of everyone and give up. Sending each person their own pictures by hand takes an
 4. **Export** a ZIP with one folder per person, or one mail at a time. Each folder has an Outlook-ready
    draft (`.eml`) with the photos attached, the post as a text file, and the resized images.
 
-Double-click a draft and Outlook opens it as an unsent mail, recipient and attachments in place.
-Read it, maybe tweak it, hit send. No mass mailing, no automation you can't see.
+Sending stays manual on purpose: one person at a time, you read, you send. No mass mailing, no automation you can't see.
+
+### Sending
+
+There is no universal way to open a draft with attachments in every mail client without an OAuth integration,
+so the Export page offers three honest paths:
+
+| Path | What you get | Where |
+|---|---|---|
+| **Senden** | The system share sheet with the photos and the text, pick your mail app | Phones, Windows, Safari on Mac |
+| **Senden** (fallback) | A `mailto:` draft with recipient, subject and text; photos are in that person's ZIP folder | Everywhere else |
+| **.eml** | The full mail: HTML post card, inline previews, photos attached | Classic Outlook on Windows opens it as a draft. New Outlook, Outlook for Mac and Apple Mail show it as a received message: open it, **Forward**, pick the recipient |
 
 The mail itself is HTML. The LinkedIn suggestion is rendered as a post card with the person's own photos
 as the media, and a **"Text kopieren"** button that opens a small page with a real copy-to-clipboard button.
-Plain-text clients get a plain-text version of the same mail.
+Plain-text clients, the share sheet and the mailto draft get a text version with the same copy link.
 
 ## Privacy
 

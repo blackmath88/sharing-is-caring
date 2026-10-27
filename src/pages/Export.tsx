@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { dataOf, getRecipients, useStore } from '../store'
 import { buildOne, buildZip, download, estimateMB, slug } from '../exporter'
+import { canShareFiles, mailParts, openMailto, shareFiles } from '../send'
 import { Thumb } from '../Thumb'
 
 const validMail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)
@@ -19,6 +20,34 @@ export function ExportPage() {
   const [busy, setBusy] = useState<string | null>(null)
   const backup = useRef<HTMLInputElement>(null)
   const abort = useRef<AbortController | null>(null)
+  const shared = useRef(new Map<string, File[]>()) // vorbereitete Fotos pro Person fürs Share-Sheet
+  const [armed, setArmed] = useState<string | null>(null)
+  const share = canShareFiles()
+
+  // Senden: Share-Sheet mit Fotos, sonst mailto. Nach dem Verkleinern kann die Klick-Erlaubnis
+  // abgelaufen sein; dann bleibt der Knopf „Jetzt senden“ und der zweite Klick teilt sofort.
+  async function send(r: (typeof recips)[number]) {
+    const id = r.person.id
+    const d = dataOf(useStore.getState())
+    const parts = mailParts(d, r)
+    setErr('')
+    if (share) {
+      let files = shared.current.get(id)
+      if (!files) {
+        setBusy(id)
+        try { files = await shareFiles(d, r); shared.current.set(id, files) }
+        catch (e) { setErr((e as Error).message); setBusy(null); return }
+        setBusy(null)
+      }
+      try { await navigator.share({ title: parts.subject, text: parts.text, files }); setArmed(null); return }
+      catch (e) {
+        const n = (e as Error).name
+        if (n === 'AbortError') return
+        if (n === 'NotAllowedError') { setArmed(id); return }
+      }
+    }
+    openMailto(parts)
+  }
 
   // Einzelne Mail als .eml: Doppelklick öffnet sie im Mailprogramm als Entwurf
   async function one(id: string) {
@@ -60,7 +89,7 @@ export function ExportPage() {
       {recips.length > 0 && (
         <div className="panel">
           <table className="recips">
-            <thead><tr><th aria-label="Senden" /><th>Person</th><th>E-Mail</th><th>Fotos</th><th>Grösse</th><th aria-label="Einzelne Mail" /></tr></thead>
+            <thead><tr><th aria-label="Senden" /><th>Person</th><th>E-Mail</th><th>Fotos</th><th>Grösse</th><th aria-label="Aktionen" /></tr></thead>
             <tbody>
               {recips.map(({ person: p, photoIds }) => {
                 const off = excluded.includes(p.id)
@@ -72,7 +101,13 @@ export function ExportPage() {
                     <td><input className={`field slim${!off && !validMail(p.email) ? ' invalid' : ''}`} value={p.email} placeholder="E-Mail ergänzen" onChange={(e) => updatePerson(p.id, { email: e.target.value.trim() })} /></td>
                     <td><div className="tiny-thumbs">{photoIds.slice(0, 4).map((id) => <Thumb key={id} id={id} />)}{photoIds.length > 4 && <span className="muted small">+{photoIds.length - 4}</span>}</div></td>
                     <td className={mb > 20 ? 'warn' : 'muted'}>ca. {mb.toFixed(1)} MB</td>
-                    <td><button className="btn slim" disabled={!!busy || !!prog} onClick={() => one(p.id)} title="Nur diese Mail als .eml herunterladen">{busy === p.id ? '…' : 'Mail öffnen'}</button></td>
+                    <td className="actions">
+                      <button className="btn slim primary" disabled={!!busy || !!prog || !validMail(p.email)} onClick={() => send({ person: p, photoIds })}
+                        title={share ? 'Fotos und Text ans Mailprogramm übergeben' : 'Entwurf im Mailprogramm öffnen (Fotos aus dem Ordner anhängen)'}>
+                        {busy === p.id ? '…' : armed === p.id ? 'Jetzt senden' : 'Senden'}
+                      </button>
+                      <button className="btn slim" disabled={!!busy || !!prog} onClick={() => one(p.id)} title="Vollständige Mail als Datei: in klassischem Outlook als Entwurf, sonst öffnen und weiterleiten">.eml</button>
+                    </td>
                   </tr>
                 )
               })}
@@ -100,10 +135,17 @@ export function ExportPage() {
       </div>
       {err && <p className="note error">{err}</p>}
 
-      <p className="muted small explain">
-        Pro Person ein Ordner mit Mail-Entwurf (.eml), LinkedIn-Text und den Fotos. Doppelklick auf die .eml öffnet in Outlook einen sendebereiten Entwurf mit Anhängen.
-        „Mail öffnen“ lädt nur diese eine .eml; wenn der Browser .eml-Dateien direkt öffnet, landet sie mit einem Klick im Mailprogramm.
-      </p>
+      <dl className="how">
+        <dt>Senden</dt>
+        <dd>{share
+          ? 'Übergibt Fotos und Text ans Mailprogramm deiner Wahl. Empfänger und Betreff dort kurz prüfen, dann senden.'
+          : 'Öffnet einen Entwurf im Mailprogramm mit Empfänger, Betreff und Text. Die Fotos liegen im Ordner der Person im ZIP und werden angehängt.'}
+          {' '}Der LinkedIn-Text steckt als Link zum Kopieren im Mailtext.</dd>
+        <dt>.eml</dt>
+        <dd>Die vollständige Mail als Datei, mit Fotos im Anhang und dem LinkedIn-Beitrag als Karte. Klassisches Outlook (Windows) öffnet sie als Entwurf. Neues Outlook, Outlook für Mac und Apple Mail zeigen sie als empfangene Nachricht: öffnen, <b>Weiterleiten</b>, Empfänger wählen, senden.</dd>
+        <dt>ZIP</dt>
+        <dd>Alles auf einmal: pro Person ein Ordner mit .eml, LinkedIn-Text und den Fotos, dazu eine Übersicht als CSV.</dd>
+      </dl>
 
       <section className="backup">
         <h2>Sicherung</h2>
