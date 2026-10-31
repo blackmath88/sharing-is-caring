@@ -65,6 +65,10 @@ Mail clients strip scripts, so a copy button inside a mail cannot work. The link
 
 See [Sending](SENDING.md) for what each mail client supports and why the app offers three paths.
 
+## Errors
+
+Render errors (for example a corrupted store or IndexedDB being unavailable in a private window) land on one German crash screen with the message, a reload button and a link to the issue form. It is used both as the router's `defaultErrorComponent` and as a React error boundary around the router.
+
 ## Checks
 
 `npm run check` (tsc), `npm run lint` (oxlint), `npm test` (vitest, pure logic only: CSV parser, MIME builder, HTML builder, send module) and `npm run build`. CI runs all four on every push. The deploy workflow builds on push to `main` and publishes `dist/` to GitHub Pages.

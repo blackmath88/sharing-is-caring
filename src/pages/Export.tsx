@@ -14,6 +14,7 @@ export function ExportPage() {
   const active = recips.filter((r) => !excluded.includes(r.person.id))
   const untagged = photos.filter((p) => !tags[p.id]?.length).length
   const missing = active.filter((r) => !validMail(r.person.email)).length
+  const noPhoto = people.filter((p) => !recips.some((r) => r.person.id === p.id))
   const [prog, setProg] = useState<{ f: number; label: string } | null>(null)
   const [done, setDone] = useState<{ blob: Blob; name: string; count: number } | null>(null)
   const [err, setErr] = useState('')
@@ -116,6 +117,13 @@ export function ExportPage() {
         </div>
       )}
 
+      {noPhoto.length > 0 && (
+        <p className="note">
+          {noPhoto.length === 1 ? 'Eine Person ist' : `${noPhoto.length} Personen sind`} auf keinem Foto markiert und
+          {noPhoto.length === 1 ? ' bekommt' : ' bekommen'} keine Mail: {noPhoto.slice(0, 8).map((p) => `${p.first} ${p.last}`.trim()).join(', ')}
+          {noPhoto.length > 8 && ` und ${noPhoto.length - 8} weitere`}. <Link to="/taggen">Markieren</Link>
+        </p>
+      )}
       {missing > 0 && <p className="note error">{missing} ohne gültige E-Mail. Die Entwürfe entstehen trotzdem, Empfänger dann in Outlook ergänzen.</p>}
       {recips.some((r) => estimateMB(r.photoIds.length, settings.maxEdge) > 20) && (
         <p className="note">Über 20 MB kommen bei manchen Postfächern nicht an. Kleinere Bildgrösse unter Texte wählen.</p>

@@ -9,6 +9,7 @@ import { TagPage } from './pages/Tag'
 import { TemplatesPage } from './pages/Templates'
 import { ExportPage } from './pages/Export'
 import { PostPage } from './pages/Post'
+import { CrashScreen, ErrorBoundary } from './ErrorBoundary'
 import '@fontsource-variable/inter'
 import './styles.css'
 
@@ -33,6 +34,7 @@ const router = createRouter({
     post,
   ]),
   history: createHashHistory(),
+  defaultErrorComponent: ({ error }) => <CrashScreen error={error} />,
 })
 
 declare module '@tanstack/react-router' {
@@ -40,5 +42,5 @@ declare module '@tanstack/react-router' {
 }
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode><RouterProvider router={router} /></StrictMode>,
+  <StrictMode><ErrorBoundary><RouterProvider router={router} /></ErrorBoundary></StrictMode>,
 )
