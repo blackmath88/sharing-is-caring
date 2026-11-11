@@ -46,12 +46,23 @@ Open the local URL Vite prints (normally http://localhost:5173). The interface i
 |---|---|
 | Import photos and a CSV list | Photos as thumbnails, people with name and address; the list parser accepts German or English headers, comma or semicolon |
 | Tag a photo | Type a name, press Enter, next photo; a group shot is one click for everyone |
+| Prepare texts with your AI | Copy a data-free prompt, discuss the event in your own assistant, paste the three results back |
 | Write one template | Mail text and LinkedIn post with placeholders, previewed per person as the real HTML mail |
 | Send to one person | Share sheet with the photos, a mailto draft, or the full .eml with the post card |
 | Export everything | A ZIP with one folder per person: .eml draft, LinkedIn text, resized photos, plus an overview CSV |
 | Back up | People, tags and templates as one JSON file |
 
 The recipient's mail is HTML: text, a LinkedIn-style card with their own photos as the post's media, and a **Text kopieren** button that opens a small page with a real copy-to-clipboard button. Plain-text clients get the same content as text.
+
+## Optional AI writing help
+
+On **Texte**, use **Prompt kopieren** to take a generic workflow prompt to your preferred assistant. **Prompt ansehen** lets you inspect it first; if clipboard access fails, the text is shown for manual copying. The prompt asks for event context and produces a subject, thank-you mail and optional participant-perspective LinkedIn text using the app's supported placeholders. Paste these into the existing fields and review the preview.
+
+No AI account, API key or integration is needed. The copied prompt includes **none of your app data**: no photos, participants, addresses, settings or existing drafts. Any context you separately provide to an AI leaves this app's local-only boundary. Review generated claims and photo permissions before sending.
+
+## Deployment
+
+The verified public address remains [GitHub Pages](https://blackmath88.github.io/sharing-is-caring/). Cloudflare Workers static-asset configuration is included; a Bridge Work domain is **not yet verified live**. See [Cloudflare setup](docs/DEPLOYMENT.md) for Git-connected automatic builds and the suggested `sharing.bridge-work.ai` domain.
 
 ## Sending
 
@@ -87,7 +98,7 @@ Generated placeholder photos and invented names.
 
 ## Privacy
 
-Nothing leaves the browser. Photos live in IndexedDB, names and templates in localStorage, and the app is a static page on GitHub Pages with no backend, no analytics and no third-party font host. The copy-text page carries the post in the URL fragment, which browsers never send to a server.
+The app does not upload your working data. Photos live in IndexedDB, names and templates in localStorage, and the app is a static page on GitHub Pages with no backend, no analytics and no third-party font host. The copy-text page carries the post in the URL fragment, which browsers never send to a server.
 
 ## Limits
 
@@ -111,6 +122,7 @@ CI runs all four on every push. The deploy workflow builds on push to `main` and
 
 | Need | Read |
 |---|---|
+| Cloudflare Worker and custom domain | [Deployment](docs/DEPLOYMENT.md) |
 | How the pieces fit | [Architecture](docs/ARCHITECTURE.md) |
 | What each mail client supports | [Sending](docs/SENDING.md) |
 | Report a problem or propose a change | [Contributing](CONTRIBUTING.md) |
