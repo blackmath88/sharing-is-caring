@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getRecipients, useStore, type Tpl } from '../store'
 import { DEFAULT_TPL, PLACEHOLDERS, fill, varsFor } from '../templates'
+import { AiHelp } from '../AiHelp'
 import { Thumb } from '../Thumb'
 import { useImages } from '../db'
 import { buildHtml, copyUrl, postCard } from '../html'
@@ -45,6 +46,7 @@ export function TemplatesPage() {
 
       <div className="tpl">
         <div className="tpl-edit">
+          <AiHelp />
           <fieldset className="settings">
             <label>Anlass<input className="field" value={settings.event} onChange={(e) => setSettings({ event: e.target.value })} /></label>
             <label>Absender<input className="field" value={settings.senderName} placeholder="Vorname Nachname" onChange={(e) => setSettings({ senderName: e.target.value })} /></label>
