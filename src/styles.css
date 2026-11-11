@@ -220,3 +220,10 @@ kbd { font-family: var(--font); font-size: 11px; min-width: 20px; display: inlin
 .postcard-name { font-weight: 700; font-size: 15px; }
 .postcard-text { white-space: pre-wrap; font-size: 14.5px; line-height: 1.45; padding: 10px 0 14px; }
 .postcard-copy { width: 100%; }
+
+/* Optional writing help, using the same surface and typography as the editor. */
+.ai-help { padding: 16px; margin-bottom: 20px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); }
+.ai-help h2 { margin: 0 0 8px; font-size: 16px; }
+.ai-help p { margin: 8px 0; }
+.ai-help-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.ai-help textarea { margin-top: 8px; }
