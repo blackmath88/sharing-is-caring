@@ -21,6 +21,8 @@ src/
   db.ts               IndexedDB blobs, image resizing, worker pool for export
   resize.worker.ts    OffscreenCanvas resizing off the main thread
   csv.ts              participant list parsing (fuzzy headers, UTF-8 or Windows-1252)
+  AiHelp.tsx          clipboard writing helper with visible manual fallback
+  aiPrompt.ts         generic prompt; no app state input or network access
   templates.ts        default texts, placeholders, per-person variable filling
   html.ts             HTML mail body and the LinkedIn-style post card
   eml.ts              MIME assembly for the .eml drafts
@@ -72,3 +74,11 @@ Render errors (for example a corrupted store or IndexedDB being unavailable in a
 ## Checks
 
 `npm run check` (tsc), `npm run lint` (oxlint), `npm test` (vitest, pure logic only: CSV parser, MIME builder, HTML builder, send module) and `npm run build`. CI runs all four on every push. The deploy workflow builds on push to `main` and publishes `dist/` to GitHub Pages.
+
+## AI writing handoff
+
+The Texte page offers a generic clipboard prompt derived from the supported placeholder list. It takes no app state and makes no network requests. The user supplies any event context in their chosen external assistant and manually pastes results into the existing template fields. Clipboard failure reveals a selectable read-only textarea; status messages are announced through a live region. No automatic AI output import or execution is added.
+
+## Hosting
+
+`wrangler.jsonc` serves `dist/` as Cloudflare Worker static assets without a Worker script or backend. Relative asset paths and hash routing also preserve the existing GitHub Pages deployment. See [Deployment](DEPLOYMENT.md) for setup and origin-specific storage limitations.
