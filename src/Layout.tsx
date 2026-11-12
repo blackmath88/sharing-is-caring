@@ -18,7 +18,7 @@ export function Layout() {
   ] as const
 
   async function onReset() {
-    if (!confirm('Alle Fotos, Personen, Markierungen und Texte löschen?')) return
+    if (!confirm('Lokales Projekt löschen? Alle Fotos, Personen, Markierungen und Texte in diesem Browser werden entfernt. Es gibt keine Cloud-Kopie. Heruntergeladene Dateien bleiben erhalten.')) return
     await wipe()
     reset()
   }
@@ -42,7 +42,7 @@ export function Layout() {
           ))}
         </nav>
         <div className="sidebar-foot">
-          <p>Alles bleibt in diesem Browser.</p>
+          <p>Lokal in diesem Browser gespeichert.<br />Keine Cloud-Sicherung.</p>
           <button className="link-btn" onClick={onReset}>Neu beginnen</button>
           <a className="gh" href={REPO} target="_blank" rel="noreferrer"><IconGitHub /> Open Source</a>
         </div>
@@ -51,3 +51,4 @@ export function Layout() {
     </div>
   )
 }
+

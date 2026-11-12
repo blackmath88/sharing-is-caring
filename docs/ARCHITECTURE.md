@@ -17,6 +17,7 @@ Sharing is Caring is a static single-page application. There is no server, no da
 src/
   main.tsx            routes: four steps inside the app shell, plus the standalone copy page (/post)
   Layout.tsx          sidebar with the step navigation
+  StorageNotice.tsx   import notice explaining local storage, loss, backup and sharing boundaries
   store.ts            zustand store and the recipient derivation
   db.ts               IndexedDB blobs, image resizing, worker pool for export
   resize.worker.ts    OffscreenCanvas resizing off the main thread
@@ -82,3 +83,4 @@ The Texte page offers a generic clipboard prompt derived from the supported plac
 ## Hosting
 
 `wrangler.jsonc` serves `dist/` as Cloudflare Worker static assets without a Worker script or backend. Relative asset paths and hash routing also preserve the existing GitHub Pages deployment. See [Deployment](DEPLOYMENT.md) for setup and origin-specific storage limitations.
+

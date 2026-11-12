@@ -6,6 +6,7 @@ import { hasOriginal, ingest } from '../db'
 import { parsePeople, readText } from '../csv'
 import { Thumb } from '../Thumb'
 import { IconList, IconPhoto } from '../icons'
+import { StorageNotice } from '../StorageNotice'
 
 function Drop(p: { title: string; hint: string; icon: React.ReactNode; accept: string; multiple?: boolean; onFiles: (f: File[]) => void; children?: React.ReactNode }) {
   const [over, setOver] = useState(false)
@@ -88,6 +89,7 @@ export function ImportPage() {
       <h1>Fotos und Teilnehmende</h1>
       <p className="lede">Die Fotos vom Anlass und die Teilnehmerliste hierher ziehen. Beides bleibt in diesem Browser; nichts wird hochgeladen.</p>
 
+      <StorageNotice />
       <div className="grid2">
         <Drop title="Fotos" icon={<IconPhoto size={20} />} hint="JPG, PNG oder WebP. Mehrere auf einmal." accept="image/*" multiple onFiles={onPhotos}>
           {prog && (
@@ -143,3 +145,4 @@ export function ImportPage() {
     </div>
   )
 }
+

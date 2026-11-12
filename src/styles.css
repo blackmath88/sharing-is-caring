@@ -68,6 +68,11 @@ nav { display: flex; flex-direction: column; gap: 2px; }
 .lede { color: var(--muted); max-width: 62ch; margin: 0 0 28px; font-size: 15px; }
 
 /* Controls */
+.storage-notice { margin: 0 0 24px; padding: 16px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); }
+.storage-notice p { margin: 8px 0; max-width: 75ch; }
+.storage-notice summary { cursor: pointer; color: var(--accent-ink); }
+.storage-notice details { margin-top: 10px; }
+
 .btn { appearance: none; display: inline-flex; align-items: center; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-weight: 550; padding: 7px 14px; border-radius: var(--r-sm); cursor: pointer; text-decoration: none; box-shadow: 0 1px 1px rgba(0, 0, 0, .03); transition: background .12s, transform .06s; }
 .btn:hover { background: var(--surface-2); }
 .btn:active { transform: scale(.98); }
@@ -227,3 +232,4 @@ kbd { font-family: var(--font); font-size: 11px; min-width: 20px; display: inlin
 .ai-help p { margin: 8px 0; }
 .ai-help-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .ai-help textarea { margin-top: 8px; }
+

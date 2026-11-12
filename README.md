@@ -98,6 +98,8 @@ Generated placeholder photos and invented names.
 
 ## Privacy
 
+The Import page explains local storage before files are selected, with expandable details available on desktop and mobile. The sidebar, reset confirmation and Export backup section reinforce that there is no cloud backup. Closing the tab normally retains work, but clearing site data, private browsing or browser storage eviction can remove it. Storage is separate for each origin and browser profile; changing domains or devices does not migrate a project. The JSON backup excludes photos: keep the original files separately and re-import those same files when restoring.
+
 The app does not upload your working data. Photos live in IndexedDB, names and templates in localStorage, and the app is a static page on GitHub Pages with no backend, no analytics and no third-party font host. The copy-text page carries the post in the URL fragment, which browsers never send to a server.
 
 ## Limits
@@ -128,3 +130,4 @@ CI runs all four on every push. The deploy workflow builds on push to `main` and
 | Report a problem or propose a change | [Contributing](CONTRIBUTING.md) |
 
 **Reuse:** [MIT](LICENSE). Demo photos are generated, demo people are invented; nothing in the repository depicts a real person.
+
