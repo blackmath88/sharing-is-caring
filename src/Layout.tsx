@@ -1,6 +1,7 @@
 import { Link, Outlet } from '@tanstack/react-router'
 import { getRecipients, useStore } from './store'
 import { wipe } from './db'
+import { BuildCredit } from './BuildCredit'
 import { IconCheck, IconGitHub, IconSend, IconTag, IconText, IconUpload, Logo } from './icons'
 
 export const REPO = 'https://github.com/blackmath88/sharing-is-caring'
@@ -25,6 +26,7 @@ export function Layout() {
 
   return (
     <div className="app">
+      <div className="build-banner"><BuildCredit /></div>
       <aside className="sidebar">
         <div className="brand">
           <Logo size={30} />

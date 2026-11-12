@@ -3,6 +3,8 @@
 
 # Sharing is Caring
 
+Built by [bridge·work](https://bridge-work.ai/lab/#sharing-is-caring). An open-source tool from the Bridge Work Lab.
+
 **Event photos → the people in them → one mail each, with a LinkedIn post ready to use.**
 
 <a href="https://github.com/blackmath88/sharing-is-caring/actions/workflows/ci.yml"><img alt="Checks" src="https://github.com/blackmath88/sharing-is-caring/actions/workflows/ci.yml/badge.svg?branch=main"></a>
