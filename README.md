@@ -29,7 +29,7 @@ A small browser application for the step after an event: the photographer delive
 
 ## Start
 
-Open **[the app](https://blackmath88.github.io/sharing-is-caring/)** and click **Mit Beispiel ausprobieren** on the first page. Four AI-generated event photos and eight invented people load: a workshop discussion, a coffee conversation, a group photograph and a shared venue photo. These depict a fictional event, not real participants. See [demo provenance and prompts](public/demo/README.md). Real data stays in your browser's IndexedDB and localStorage; clear the site data and it is gone.
+Open **[the app](https://blackmath88.github.io/sharing-is-caring/)** and click **Mit Beispiel ausprobieren** on the first page. Eight AI-generated event photos and eight invented people load: a workshop discussion, a coffee conversation, a group photograph, a shared venue photo, a larger group and three Zürich-style business scenes (panel, networking and office workshop). These depict a fictional event, not real participants. See [demo provenance and prompts](public/demo/README.md). Real data stays in your browser's IndexedDB and localStorage; clear the site data and it is gone.
 
 To run it locally, use **Node.js 22** and npm:
 

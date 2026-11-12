@@ -76,7 +76,7 @@ export function ImportPage() {
     setDemo(true)
     try {
       const file = async (path: string, type: string) => new File([await (await fetch(path)).blob()], path.split('/').pop()!, { type })
-      const imgs = await Promise.all(['workshop', 'coffee', 'group', 'venue'].map((scene) => file(`demo/event-${scene}.jpg`, 'image/jpeg')))
+      const imgs = await Promise.all(['workshop', 'coffee', 'group', 'venue', 'large-group', 'zurich-panel', 'zurich-networking', 'zurich-workshop'].map((scene) => file(`demo/event-${scene}.jpg`, 'image/jpeg')))
       await onPhotos(imgs)
       await onList([await file('demo/teilnehmende.csv', 'text/csv')])
       if (settings.event === DEFAULT_SETTINGS.event) setSettings({ event: 'Community-Werkstatt 2026 (Demo)' })
@@ -108,7 +108,7 @@ export function ImportPage() {
             <h2>{photos.length} Fotos</h2>
           </div>
           {photoMsg && <p className="note">{photoMsg}</p>}
-          {photos.some((p) => /^event-(workshop|coffee|group|venue)\.jpg$/.test(p.name)) && <p className="note">Beispielbilder: KI-generierte Szenen eines erfundenen Anlasses.</p>}
+          {photos.some((p) => /^event-(workshop|coffee|group|venue|large-group|zurich-panel|zurich-networking|zurich-workshop)\.jpg$/.test(p.name)) && <p className="note">Beispielbilder: KI-generierte Szenen eines erfundenen Anlasses.</p>}
           {photos.length > 0 ? (
             <div className="mini-grid">
               {photos.slice(0, 23).map((p) => <Thumb key={p.id} id={p.id} />)}
@@ -140,7 +140,7 @@ export function ImportPage() {
       ) : !people.length && (
         <div className="next demo">
           <button className="btn" disabled={demo} onClick={loadDemo}>{demo ? 'Lädt …' : 'Mit Beispiel ausprobieren'}</button>
-          <span className="muted small">4 KI-generierte Eventfotos und 8 erfundene Personen. Kein echter Anlass.</span>
+          <span className="muted small">8 KI-generierte Eventfotos und 8 erfundene Personen. Kein echter Anlass.</span>
         </div>
       )}
     </div>
