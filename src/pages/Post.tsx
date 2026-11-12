@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSearch } from '@tanstack/react-router'
+import { BuildCredit } from '../BuildCredit'
 
 // Landet man über „Text kopieren“ aus der Mail. Der Text steckt in der URL (Fragment), nichts wird geladen.
 function decode(t: string) {
@@ -37,6 +38,8 @@ export function PostPage() {
         {text && <button className="btn primary postcard-copy" onClick={copy}>{done ? 'Kopiert ✓' : 'Text kopieren'}</button>}
       </div>
       <p className="muted small">Sharing is Caring · Der Text steht nur in diesem Link, nichts wird gespeichert.</p>
+      <BuildCredit />
     </div>
   )
 }
+

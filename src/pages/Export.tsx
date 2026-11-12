@@ -157,7 +157,7 @@ export function ExportPage() {
 
       <section className="backup">
         <h2>Sicherung</h2>
-        <p className="muted small">Personen, Markierungen und Texte als Datei. Ohne Bilder: nach dem Laden die Fotos mit denselben Dateinamen erneut importieren.</p>
+        <p className="muted small">Keine automatische Cloud-Sicherung: Speichere Personen, Markierungen, Einstellungen und Texte als JSON-Datei. Die Sicherung enthält keine Bilder. Originalfotos separat behalten und nach dem Laden dieselben Originaldateien erneut importieren. Ein anderer Browser, ein anderes Gerät oder eine andere Website-Adresse übernimmt dein Projekt nicht automatisch.</p>
         <div className="row">
           <button className="btn" onClick={() => download(new Blob([JSON.stringify(dataOf(state), null, 1)], { type: 'application/json' }), `${slug(settings.event)}_Sicherung.json`)}>Sicherung speichern</button>
           <button className="btn" onClick={() => backup.current?.click()}>Sicherung laden</button>
@@ -167,3 +167,4 @@ export function ExportPage() {
     </div>
   )
 }
+
