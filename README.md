@@ -78,25 +78,22 @@ No mail client opens a draft with attachments from a file in every case, so the 
 
 ## Screenshots
 
-These screenshots show the earlier abstract placeholder photos and invented names. The current demo uses AI-generated event photos; refreshed UI screenshots are pending browser verification.
+Actual app screenshots with the eight AI-generated event photos and invented demo participants. Assignments are illustrative, not face recognition. Captured on 12 November 2026.
 
 | Import | Tag |
 |---|---|
-| ![Import page](.github/media/screens/1-import.png) | ![Tagging page](.github/media/screens/2-tag.png) |
+| ![Import page](.github/media/screens/1-import.jpg) | ![Tagging page](.github/media/screens/2-tag.jpg) |
 
 | Template with live HTML preview | Export, per person or as ZIP |
 |---|---|
-| ![Templates page](.github/media/screens/3-texts.png) | ![Export page](.github/media/screens/4-export.png) |
+| ![Templates page](.github/media/screens/3-texts.jpg) | ![Export page](.github/media/screens/4-export.jpg) |
 
 <p align="center">
-  <img src=".github/media/screens/6-mail.png" width="520" alt="The mail a recipient gets: text, a LinkedIn-style post card with their photos, and a copy button"><br>
+  <img src=".github/media/screens/6-mail.jpg" width="520" alt="The mail a recipient gets: text, a LinkedIn-style post card with their photos, and a copy button"><br>
   <em>What the recipient gets.</em>
 </p>
 
-<p align="center">
-  <img src=".github/media/screens/5-dark.png" width="640" alt="Tagging page in dark mode"><br>
-  <em>Follows the system colour scheme.</em>
-</p>
+
 
 ## Privacy
 
