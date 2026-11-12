@@ -32,7 +32,7 @@ src/
   icons.tsx           icon set and logo
   pages/              Import, Tag, Templates, Export, Post
 public/
-  demo/               generated placeholder photos and an invented participant list
+  demo/               AI-generated fictional event photos, provenance and an invented participant list
   og.png, logo.svg    social card and logo
 ```
 
